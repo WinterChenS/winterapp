@@ -1,0 +1,89 @@
+<style>
+  @import '/towxml/style/main.wxss';
+  @import '/towxml/style/theme/light.wxss';
+  @import '/towxml/style/theme/dark.wxss';
+</style>
+<template lang="wxml">
+  <!--引入wxml模版-->
+  <import src="/towxml/entry.wxml"/>
+  <template is="entry" data="{{...detail.newsContent}}"/>
+  <button class="btn" wx:if="{{!!detail.newsTitle}}" @tap="finish"> Back </button>
+</template>
+
+<script>
+import wepy from 'wepy'
+// 引入towxml库
+import Towxml from 'towxml'
+export default class Article extends wepy.page {
+  config = {
+    navigationBarTitleText: 'Luis Blog'
+  };
+  components={
+  }
+  data = {
+    selectedWordPosition: [0, 0],
+    detail: {
+      newsContent: 'loading...',
+      articleId: null,
+      newsTitle: '',
+      source: {}
+    }
+  };
+  methods={
+    finish() {
+      wx.navigateBack({
+        delta: 1
+      })
+    }
+  }
+  computed = {
+    articleId() {
+      return this.detail.id
+    }
+  };
+  parseContent(content) {
+  }
+  onShareAppMessage() {
+    let id = this.detail.id
+    let title = this.detail.newsTitle
+    return {
+      title: `News Lite - ${title}`,
+      path: `/pages/article?id=${id}`
+    }
+  }
+  onLoad(options = {}) {
+    const towxml = new Towxml()
+    wx.showLoading({
+      title: '加载中'
+    })
+    options.id = options.id || 'oivfz'
+    wx.request({
+      url: `https://app.winterchen.com/api/news/${options.id}/`,
+      success: (res) => {
+        if (res.data.code === 'success') {
+          Object.assign(this.detail, res.data.data)
+          // let data = towxml.md2wxml(res.data.data.newsContent)
+          let data = towxml.toJson(res.data.data.newsContent, 'markdown')
+          // 设置主题
+          data.theme = 'ligth'
+          this.data.detail.newsContent = data
+        } else {
+          wx.showModal({
+            title: '提示',
+            content: '模态弹窗',
+            success: function (res) {
+              if (res.confirm) {
+                console.log('用户点击确定')
+              } else {
+                console.log('用户点击取消')
+              }
+            }
+          })
+        }
+        this.$apply()
+        wx.hideLoading()
+      }
+    })
+  }
+}
+</script>
