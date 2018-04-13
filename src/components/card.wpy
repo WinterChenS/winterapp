@@ -90,7 +90,7 @@
         <text class="card-content" >{{content}}</text>
         <view class="info-area">
           <text class="grade">{{grade}}</text>
-          <text class="words">{{words}}词</text>
+          <text class="words">{{words}}字</text>
           <text class="reviews">{{reviews}}</text>
         </view>
       </view>

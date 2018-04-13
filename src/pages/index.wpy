@@ -101,7 +101,7 @@ import Card from '../components/card'
 
 export default class Index extends wepy.page {
   config = {
-    navigationBarTitleText: 'My Blog',
+    navigationBarTitleText: 'Luis Blog',
     window: {
       enablePullDownRefresh: true
     }
@@ -171,6 +171,10 @@ export default class Index extends wepy.page {
       success: (res) => {
         console.log(res)
         if (res.data.code === 'success') {
+          if (res.data.data === null || res.data.data.length === 0) {
+            this.isLoadingMore = false
+            this.info = '已经到底了'
+          }
           this.detail.objects = this.detail.objects.concat(res.data.data)
         }
         this.$apply()

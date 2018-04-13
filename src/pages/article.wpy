@@ -47,7 +47,7 @@ export default class Article extends wepy.page {
     let id = this.detail.id
     let title = this.detail.newsTitle
     return {
-      title: `News Lite - ${title}`,
+      title: `Luis Blog - ${title}`,
       path: `/pages/article?id=${id}`
     }
   }
